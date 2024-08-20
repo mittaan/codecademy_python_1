@@ -10,7 +10,7 @@ class Path:
         basic_path = [["□" if _ != 0 else "■" for _ in range(self.WIDTH)] for _ in range(self.HEIGHT)]
         shuffled_path = []
         for row in basic_path:
-            # rn.shuffle(row)
+            rn.shuffle(row)
             shuffled_path.append(row)
         return shuffled_path
     
@@ -51,6 +51,8 @@ class Board:
         return board_updated
     
     def __check_path(self, user_input: int, path_level: int) -> bool:
+        if path_level >= self.HEIGHT:
+            return
         coords = f'{user_input},{path_level}'
         hidden_value = list(self.path.get_level(path_level))
 
