@@ -1,34 +1,10 @@
 #!/usr/bin/env python3
 
-from libs import Board, Path
+from libs import Board, Path, pretty_header, choose_difficulty, set_parameters
 
-def choose_difficulty(difficulty_index: str) -> str:
-    match difficulty_index:
-        case '1':
-            return 'EASY'
-        case '2':
-            return 'MEDIUM'
-        case '3':
-            return 'HARD'
-        case '-1':
-            return 'IRON'
-        case '42':
-            return 'YOU WIN'
-        case _:
-            return 'Invalid input.'
-
-def set_parameters(difficulty: str) -> tuple:
-    match difficulty:
-        case 'EASY':
-            return (4, 4, 8)
-        case 'MEDIUM':
-            return (6, 4, 4)
-        case 'HARD':
-            return (8, 5, 2)
-        case 'IRON':
-            return (4, 4, 0)
 
 def start_game(difficulty: str) -> None:
+
     # Parameters used to set the layout for the game
     width, height, tries = set_parameters(difficulty)
     path_level = 0
@@ -50,30 +26,37 @@ def start_game(difficulty: str) -> None:
             continue
 
         user_number = int(user_input)
-
-        coords = f'{user_number},{path_level}'
-
         board.update_visual(user_number, path_level)
 
-        if board.has_matched(coords) and path_level != height:
+        # It's useful to represent the player's try as a (x,y)-pair of coordinates
+        coords = f'{user_number},{path_level}'
+        matched = board.has_matched(coords)
+
+        if matched and path_level != (height - 1):
             path_level += 1
             print('\nCorrect! Keep going...')
+        elif path_level == (height - 1):
+            break
         elif tries > 0:
             print(f'\nNope, try again. You have {tries} tries left.')
             tries -= 1
         else:
             break
-        
-    if path_level == height:
+    
+    # Added a final snapshot of the board to correctly update the display
+    # of both the board and the points
+    if tries != 0:
+        board.update_visual(user_number, path_level, isEnd=True)
         print('\nCongratulations! You won the game :)')
     else:
+        board.print_board()
         print('\nGame over. Better luck next time.')
 
     print(f'Total points scored: {path.get_points()} out of {height * 5}')
 
 
 if __name__ == '__main__':
-
+    pretty_header()
     print('Choose the difficulty:')
     print('EASY        [type "1"]')
     print('MEDIUM      [type "2"]')

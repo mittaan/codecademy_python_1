@@ -50,6 +50,7 @@ class Board:
     
     def print_board(self) -> None:
         print('\n')
+        print('          0:   1:   2:   3:\n')
         count = 1
         for row in self.board:
             print(f'{count}:\t{row}')
@@ -87,8 +88,8 @@ class Board:
                 tries += 1
         return tries
 
-    def update_visual(self, user_input: int, path_level: int) -> None:
-        if self.__check_path(user_input, path_level):
+    def update_visual(self, user_input: int, path_level: int, isEnd=False) -> None:
+        if self.__check_path(user_input, path_level) or isEnd:
             self.board = self.__update_board(path_level)
             tries = self.__count_tries(path_level)
             self.path.add_points(tries)
@@ -96,3 +97,53 @@ class Board:
 
 
 
+def pretty_header() -> None:
+    ascii_art = '''
+ ======================================================================
+||  ______ _           _   _   _                        _   _         ||
+||  |  ___(_)         | | | | | |                      | | | |        ||
+||  | |_   _ _ __   __| | | |_| |__   ___   _ __   __ _| |_| |__      ||
+||  |  _| | | '_ \ / _` | | __| '_ \ / _ \ | '_ \ / _` | __| '_ \     ||
+||  | |   | | | | | (_| | | |_| | | |  __/ | |_) | (_| | |_| | | |    ||
+||  \_|   |_|_| |_|\__,_|  \__|_| |_|\___| | .__/ \__,_|\__|_| |_|    ||
+||                                         | |                        ||
+||                                         |_|                        ||
+||                                                                    ||
+ ======================================================================
+
+ Welcome to Find-the-Path!
+
+ ----------------------------------------------------------------------
+
+ Test your luck! Choose a square and progress down the path.
+
+'''
+
+    print(ascii_art)
+
+
+def choose_difficulty(difficulty_index: str) -> str:
+    match difficulty_index:
+        case '1':
+            return 'EASY'
+        case '2':
+            return 'MEDIUM'
+        case '3':
+            return 'HARD'
+        case '-1':
+            return 'IRON'
+        case '42':
+            return 'YOU WIN'
+        case _:
+            return 'Invalid input.'
+
+def set_parameters(difficulty: str) -> tuple:
+    match difficulty:
+        case 'EASY':
+            return (4, 4, 9)
+        case 'MEDIUM':
+            return (6, 4, 4)
+        case 'HARD':
+            return (8, 5, 2)
+        case 'IRON':
+            return (4, 4, 0)
