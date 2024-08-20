@@ -22,11 +22,11 @@ def set_parameters(difficulty: str) -> tuple:
         case 'EASY':
             return (4, 4, 8)
         case 'MEDIUM':
-            return (6, 4, 5)
+            return (6, 4, 4)
         case 'HARD':
-            return (8, 5, 3)
+            return (8, 5, 2)
         case 'IRON':
-            return (4, 4, 1)
+            return (4, 4, 0)
 
 def start_game(difficulty: str) -> None:
     # Parameters used to set the layout for the game
@@ -41,7 +41,7 @@ def start_game(difficulty: str) -> None:
     
     print(f'\nFind the hidden path! Insert a number between 0 and {width - 1}:')
 
-    while tries > 0:
+    while tries >= 0:
 
         user_input = input()
 
@@ -55,19 +55,21 @@ def start_game(difficulty: str) -> None:
 
         board.update_visual(user_number, path_level)
 
-        if board.has_matched(coords):
+        if board.has_matched(coords) and path_level != height:
             path_level += 1
-            if path_level == height:
-                break
             print('\nCorrect! Keep going...')
-        else:
-            tries -= 1
+        elif tries > 0:
             print(f'\nNope, try again. You have {tries} tries left.')
+            tries -= 1
+        else:
+            break
         
     if path_level == height:
         print('\nCongratulations! You won the game :)')
     else:
         print('\nGame over. Better luck next time.')
+
+    print(f'Total points scored: {path.get_points()} out of {height * 5}')
 
 
 if __name__ == '__main__':
