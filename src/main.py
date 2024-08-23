@@ -56,19 +56,32 @@ def start_game(difficulty: str) -> None:
 
 
 if __name__ == '__main__':
-    pretty_header()
-    print('Choose the difficulty:')
-    print('EASY        [type "1"]')
-    print('MEDIUM      [type "2"]')
-    print('HARD        [type "3"]\n')
+    while True:
+        pretty_header()
+        print('Choose the difficulty:')
+        print('EASY        [type "1"]')
+        print('MEDIUM      [type "2"]')
+        print('HARD        [type "3"]\n')
 
-    difficulty_index = input()
+        difficulty_index = input()
 
-    difficulty = choose_difficulty(difficulty_index)
-    valid_modes = ['-1', '1', '2', '3']
+        difficulty = choose_difficulty(difficulty_index)
+        valid_modes = ['-1', '1', '2', '3']
 
-    if not(difficulty_index in valid_modes):
-        print(difficulty)
-    else:
-        print(f'You chose to play the {difficulty} MODE\n')
-        start_game(difficulty)
+        if not(difficulty_index in valid_modes):
+            print(difficulty)
+        else:
+            print(f'You chose to play the {difficulty} MODE\n')
+            start_game(difficulty)
+
+        quitting = input('Do you want to keep playing? Quit [Q/q] or continue [C/c] >> ').upper()
+
+        keep_playing = False
+
+        while not(keep_playing):
+            if quitting == 'Q':
+                exit()
+            elif quitting == 'C':
+                keep_playing = True
+            else:
+                quitting = input('Not a valid input. Quit [Q/q] or continue [C/c] >> ').upper()
