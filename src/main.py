@@ -13,11 +13,11 @@ def start_game(difficulty: str) -> None:
     path = Path(width, height)
     board = Board(width, height, path)
 
-    board.print_board()
+    board.print_board(difficulty)
     
     print(f'\nFind the hidden path! Insert a number between 0 and {width - 1}:')
 
-    while tries >= 0:
+    while tries > 0:
 
         user_input = input()
 
@@ -26,30 +26,30 @@ def start_game(difficulty: str) -> None:
             continue
 
         user_number = int(user_input)
-        board.update_visual(user_number, path_level)
+        board.update_visual(user_number, path_level, difficulty)
 
         # It's useful to represent the player's try as a (x,y)-pair of coordinates
         coords = f'{user_number},{path_level}'
         matched = board.has_matched(coords)
 
-        if matched and path_level != (height - 1):
+        if matched:
             path_level += 1
+            if path_level == height:
+                break
             print('\nCorrect! Keep going...')
-        elif path_level == (height - 1):
-            break
-        elif tries > 0:
-            print(f'\nNope, try again. You have {tries} tries left.')
-            tries -= 1
         else:
-            break
+            tries -= 1
+            if tries == 0:
+                print(f'\nNope, sorry. You have no more tries left.')
+                break
+            print(f'\nNope, try again. You have {tries} tries left.')
     
     # Added a final snapshot of the board to correctly update the display
     # of both the board and the points
     if tries != 0:
-        board.update_visual(user_number, path_level, isEnd=True)
         print('\nCongratulations! You won the game :)')
     else:
-        board.print_board()
+        board.print_board(difficulty)
         print('\nGame over. Better luck next time.')
 
     print(f'Total points scored: {path.get_points()} out of {height * 5}')
@@ -58,21 +58,27 @@ def start_game(difficulty: str) -> None:
 if __name__ == '__main__':
     while True:
         pretty_header()
-        print('Choose the difficulty:')
-        print('EASY        [type "1"]')
-        print('MEDIUM      [type "2"]')
-        print('HARD        [type "3"]\n')
-
-        difficulty_index = input()
-
-        difficulty = choose_difficulty(difficulty_index)
         valid_modes = ['-1', '1', '2', '3']
 
-        if not(difficulty_index in valid_modes):
-            print(difficulty)
-        else:
-            print(f'You chose to play the {difficulty} MODE\n')
-            start_game(difficulty)
+        while True:
+            print('Choose the difficulty:')
+            print('EASY        [type "1"]')
+            print('MEDIUM      [type "2"]')
+            print('HARD        [type "3"]\n')
+
+            difficulty_index = input()
+
+            difficulty = choose_difficulty(difficulty_index)
+
+            if not(difficulty_index in valid_modes):
+                print(f'{difficulty}\n')
+            elif difficulty_index == 42:
+                print(difficulty)
+                break
+            else:
+                print(f'You chose to play the {difficulty} MODE\n')
+                start_game(difficulty)
+                break
 
         quitting = input('Do you want to keep playing? Quit [Q/q] or continue [C/c] >> ').upper()
 
